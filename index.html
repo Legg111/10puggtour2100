@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>10PUGGTOUR | Legg2100</title>
     <style>
-        /* CSS стили */
         @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
         
         * {
@@ -21,6 +20,24 @@
             min-height: 100vh;
             padding: 2rem;
             overflow-x: hidden;
+            position: relative;
+        }
+        
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            animation: flash 243s infinite;
+            z-index: -1;
+        }
+        
+        @keyframes flash {
+            0%, 99.9% { background: transparent; }
+            0.1% { background: rgba(126, 34, 206, 0.1); }
         }
         
         .container {
@@ -35,10 +52,19 @@
             margin-bottom: 2rem;
             color: #c084fc;
             text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+            position: relative;
         }
         
         h1 span {
             color: white;
+        }
+        
+        .theta-symbol {
+            position: absolute;
+            right: -15px;
+            top: -5px;
+            font-size: 0.5em;
+            color: #7e22ce;
         }
         
         .tabs {
@@ -87,11 +113,22 @@
             padding: 1.5rem;
             transition: all 0.3s;
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            position: relative;
         }
         
         .card:hover {
             transform: scale(1.05);
             box-shadow: 0 0 20px rgba(126, 34, 206, 0.4);
+        }
+        
+        .card:hover::after {
+            content: '■■■';
+            position: absolute;
+            bottom: -10px;
+            right: 10px;
+            color: #7e22ce;
+            font-size: 0.8rem;
+            opacity: 0.5;
         }
         
         .card-content {
@@ -235,8 +272,32 @@
             flex-grow: 1;
         }
         
+        .protocol-text {
+            font-size: 0.6rem;
+            color: #4b5563;
+            margin-top: 0.2rem;
+        }
+        
+        #countdown {
+            color: #c084fc;
+            font-weight: bold;
+        }
+        
         .hidden {
             display: none;
+        }
+        
+        #loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #7e22ce;
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.3s;
+            z-index: 9999;
         }
         
         @media (max-width: 640px) {
@@ -247,8 +308,10 @@
     </style>
 </head>
 <body>
+    <div id="loader"></div>
+    
     <div class="container">
-        <h1>10PUGG<span>TOUR</span></h1>
+        <h1>10PUGG<span>TOUR<span class="theta-symbol">θ</span></span></h1>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="tour">
@@ -294,7 +357,7 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>1 мая</span>
+                            <span>1 мая <span style="color:transparent">■ 243 ■</span></span>
                         </div>
                         <button class="btn buy-btn" data-city="Тамбов">Купить билеты</button>
                     </div>
@@ -316,7 +379,7 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>5 мая</span>
+                            <span>5 мая <span style="color:transparent">■ 243 ■</span></span>
                         </div>
                         <button class="btn buy-btn" data-city="Самара">Купить билеты</button>
                     </div>
@@ -338,7 +401,7 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>8 мая</span>
+                            <span>8 мая <span style="color:transparent">■ 243 ■</span></span>
                         </div>
                         <button class="btn buy-btn" data-city="Астрахань">Купить билеты</button>
                     </div>
@@ -360,7 +423,7 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>10 мая</span>
+                            <span>10 мая <span style="color:transparent">■ 243 ■</span></span>
                         </div>
                         <button class="btn buy-btn" data-city="Краснодар">Купить билеты</button>
                     </div>
@@ -387,8 +450,13 @@
                 <h3>Подпишись, чтобы не пропустить!</h3>
                 <form class="subscribe-form">
                     <input type="email" placeholder="Твой email" class="email-input" required>
+                    <small class="protocol-text">Нажимая кнопку, вы соглашаетесь с протоколом Θ-243</small>
                     <button type="submit" class="btn">Подписаться</button>
                 </form>
+            </div>
+            
+            <div style="font-size: 0.8rem; color: #4b5563; margin-top: 1rem;">
+                Следующий сигнал через: <span id="countdown">243</span> сек
             </div>
         </div>
     </div>
@@ -405,7 +473,27 @@
     </div>
     
     <script>
-        // JavaScript код
+        // Таймер обратного отсчёта
+        let counter = 243;
+        setInterval(() => {
+            counter--;
+            document.getElementById('countdown').textContent = counter;
+            if (counter <= 0) counter = 243;
+        }, 1000);
+
+        // Загрузка страницы
+        window.addEventListener('load', () => {
+            document.getElementById('loader').style.transform = 'scaleX(1)';
+            setTimeout(() => document.getElementById('loader').remove(), 500);
+        });
+
+        // Секретное сообщение в консоли
+        if(window.console) {
+            console.log('%c■■■ 243 ■■■', 'color: #7e22ce; font-size: 12px;');
+            console.log('Предупреждение: несанкционированный доступ к консоли зафиксирован');
+        }
+
+        // Основной код
         document.addEventListener('DOMContentLoaded', function() {
             // Переключение табов
             const tabBtns = document.querySelectorAll('.tab-btn');
@@ -413,14 +501,10 @@
             
             tabBtns.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // Удаляем активный класс у всех кнопок
                     tabBtns.forEach(b => b.classList.remove('active'));
-                    // Добавляем активный класс текущей кнопке
                     btn.classList.add('active');
                     
-                    // Скрываем все табы
                     tabContents.forEach(content => content.classList.add('hidden'));
-                    // Показываем нужный таб
                     const tabId = btn.getAttribute('data-tab') + '-content';
                     document.getElementById(tabId).classList.remove('hidden');
                 });
@@ -443,11 +527,9 @@
                     currentCity = btn.getAttribute('data-city');
                     modalTitle.textContent = `${currentCity} — Билеты`;
                     
-                    // Сбрасываем состояние модального окна
                     confirmBtn.style.display = 'block';
                     soldOutText.classList.add('hidden');
                     
-                    // Показываем модальное окно
                     modal.classList.add('active');
                 });
             });
@@ -457,14 +539,11 @@
             });
             
             confirmBtn.addEventListener('click', () => {
-                // Помечаем город как проданный
                 soldOutCities[currentCity] = true;
                 
-                // Показываем сообщение о продаже
                 confirmBtn.style.display = 'none';
                 soldOutText.classList.remove('hidden');
                 
-                // Обновляем кнопку на главной странице
                 document.querySelectorAll('.buy-btn').forEach(btn => {
                     if (btn.getAttribute('data-city') === currentCity) {
                         btn.textContent = 'SOLD OUT';
@@ -473,13 +552,11 @@
                     }
                 });
                 
-                // Через 2 секунды закрываем модальное окно
                 setTimeout(() => {
                     modal.classList.remove('active');
                 }, 2000);
             });
             
-            // Закрытие модального окна при клике на оверлей
             modal.addEventListener('click', (e) => {
                 if (e.target === modal) {
                     modal.classList.remove('active');
