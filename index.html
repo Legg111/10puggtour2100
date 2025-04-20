@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10PUGGTOUR | Legg2100</title>
+    <style>
+        /* CSS стили */
+        @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Mono', monospace;
+            background: linear-gradient(135deg, #000000, #18181b, #581c87);
+            color: white;
+            min-height: 100vh;
+            padding: 2rem;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: #c084fc;
+            text-shadow: 0 0 10px rgba(192, 132, 252, 0.5);
+        }
+        
+        h1 span {
+            color: white;
+        }
+        
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.75rem;
+            font-weight: bold;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #27272a;
+            color: #c084fc;
+            border: none;
+        }
+        
+        .tab-btn:hover {
+            background: #3f3f46;
+        }
+        
+        .tab-btn.active {
+            background: #7e22ce;
+            color: white;
+        }
+        
+        .tour-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        .card {
+            background: #09090b;
+            border: 1px solid #7e22ce;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(126, 34, 206, 0.4);
+        }
+        
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .location, .date {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .location {
+            color: #c084fc;
+            font-size: 1.25rem;
+        }
+        
+        .date {
+            color: #d4d4d8;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 0.5rem;
+            background: #7e22ce;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+        
+        .btn:hover {
+            background: #9333ea;
+        }
+        
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal {
+            background: #09090b;
+            border: 1px solid #7e22ce;
+            border-radius: 1.5rem;
+            padding: 2rem;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s;
+        }
+        
+        .modal-overlay.active .modal {
+            transform: scale(1);
+        }
+        
+        .close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: #c084fc;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        
+        .sold-out {
+            color: #ef4444;
+            font-weight: bold;
+            font-size: 1.25rem;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+        }
+        
+        .telegram-link {
+            color: #c084fc;
+            text-decoration: underline;
+            font-size: 1.25rem;
+            display: inline-block;
+            margin-bottom: 1.5rem;
+        }
+        
+        .telegram-link:hover {
+            color: white;
+        }
+        
+        .subscribe {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .subscribe h3 {
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .subscribe-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        @media (min-width: 768px) {
+            .subscribe-form {
+                flex-direction: row;
+            }
+        }
+        
+        .email-input {
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            background: #27272a;
+            color: white;
+            border: 1px solid #7e22ce;
+            flex-grow: 1;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>10PUGG<span>TOUR</span></h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="tour">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                    <line x1="16" y1="2" x2="16" y2="6"></line>
+                    <line x1="8" y1="2" x2="8" y2="6"></line>
+                    <line x1="3" y1="10" x2="21" y2="10"></line>
+                </svg>
+                Тур
+            </button>
+            <button class="tab-btn" data-tab="merch">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2v14M6 8h12a4 4 0 0 1 0 8H6a4 4 0 0 1 0-8z"></path>
+                </svg>
+                Мерч
+            </button>
+            <button class="tab-btn" data-tab="music">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 18V5l12-2v13"></path>
+                    <circle cx="6" cy="18" r="3"></circle>
+                    <circle cx="18" cy="16" r="3"></circle>
+                </svg>
+                Треки
+            </button>
+        </div>
+        
+        <div id="tour-content" class="tab-content">
+            <div class="tour-grid">
+                <div class="card">
+                    <div class="card-content">
+                        <div class="location">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Тамбов</span>
+                        </div>
+                        <div class="date">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>1 мая</span>
+                        </div>
+                        <button class="btn buy-btn" data-city="Тамбов">Купить билеты</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content">
+                        <div class="location">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Самара</span>
+                        </div>
+                        <div class="date">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>5 мая</span>
+                        </div>
+                        <button class="btn buy-btn" data-city="Самара">Купить билеты</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content">
+                        <div class="location">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Астрахань</span>
+                        </div>
+                        <div class="date">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>8 мая</span>
+                        </div>
+                        <button class="btn buy-btn" data-city="Астрахань">Купить билеты</button>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-content">
+                        <div class="location">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                <circle cx="12" cy="10" r="3"></circle>
+                            </svg>
+                            <span>Краснодар</span>
+                        </div>
+                        <div class="date">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                <line x1="16" y1="2" x2="16" y2="6"></line>
+                                <line x1="8" y1="2" x2="8" y2="6"></line>
+                                <line x1="3" y1="10" x2="21" y2="10"></line>
+                            </svg>
+                            <span>10 мая</span>
+                        </div>
+                        <button class="btn buy-btn" data-city="Краснодар">Купить билеты</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="merch-content" class="tab-content hidden">
+            <div style="text-align: center; color: #c084fc; font-size: 1.25rem; margin-top: 5rem;">
+                Здесь скоро появится легендарный мерч Legg2100 💜
+            </div>
+        </div>
+        
+        <div id="music-content" class="tab-content hidden">
+            <div style="text-align: center; color: #c084fc; font-size: 1.25rem; margin-top: 5rem;">
+                Врубай трек, пока ждёшь тур 😈 (но пока не добавили)
+            </div>
+        </div>
+        
+        <div class="footer">
+            <a href="https://t.me/Leggtgc" class="telegram-link" target="_blank">Наш Telegram канал</a>
+            
+            <div class="subscribe">
+                <h3>Подпишись, чтобы не пропустить!</h3>
+                <form class="subscribe-form">
+                    <input type="email" placeholder="Твой email" class="email-input" required>
+                    <button type="submit" class="btn">Подписаться</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <button class="close-btn" id="close-modal">&times;</button>
+            <h2 id="modal-title">Тамбов — Билеты</h2>
+            <p id="modal-price" style="color: #c084fc; margin: 1rem 0;">Цена: 2100₽</p>
+            <button class="btn" id="confirm-btn">Купить билеты</button>
+            <p id="sold-out" class="sold-out hidden">SOLD OUT 😢</p>
+        </div>
+    </div>
+    
+    <script>
+        // JavaScript код
+        document.addEventListener('DOMContentLoaded', function() {
+            // Переключение табов
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    // Удаляем активный класс у всех кнопок
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    // Добавляем активный класс текущей кнопке
+                    btn.classList.add('active');
+                    
+                    // Скрываем все табы
+                    tabContents.forEach(content => content.classList.add('hidden'));
+                    // Показываем нужный таб
+                    const tabId = btn.getAttribute('data-tab') + '-content';
+                    document.getElementById(tabId).classList.remove('hidden');
+                });
+            });
+            
+            // Модальное окно
+            const modal = document.getElementById('modal');
+            const closeModalBtn = document.getElementById('close-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalPrice = document.getElementById('modal-price');
+            const confirmBtn = document.getElementById('confirm-btn');
+            const soldOutText = document.getElementById('sold-out');
+            const buyBtns = document.querySelectorAll('.buy-btn');
+            
+            let currentCity = '';
+            const soldOutCities = {};
+            
+            buyBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    currentCity = btn.getAttribute('data-city');
+                    modalTitle.textContent = `${currentCity} — Билеты`;
+                    
+                    // Сбрасываем состояние модального окна
+                    confirmBtn.style.display = 'block';
+                    soldOutText.classList.add('hidden');
+                    
+                    // Показываем модальное окно
+                    modal.classList.add('active');
+                });
+            });
+            
+            closeModalBtn.addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+            
+            confirmBtn.addEventListener('click', () => {
+                // Помечаем город как проданный
+                soldOutCities[currentCity] = true;
+                
+                // Показываем сообщение о продаже
+                confirmBtn.style.display = 'none';
+                soldOutText.classList.remove('hidden');
+                
+                // Обновляем кнопку на главной странице
+                document.querySelectorAll('.buy-btn').forEach(btn => {
+                    if (btn.getAttribute('data-city') === currentCity) {
+                        btn.textContent = 'SOLD OUT';
+                        btn.style.backgroundColor = '#ef4444';
+                        btn.style.cursor = 'not-allowed';
+                    }
+                });
+                
+                // Через 2 секунды закрываем модальное окно
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                }, 2000);
+            });
+            
+            // Закрытие модального окна при клике на оверлей
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+            
+            // Обработка формы подписки
+            const subscribeForm = document.querySelector('.subscribe-form');
+            subscribeForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const email = subscribeForm.querySelector('input').value;
+                alert(`Спасибо за подписку, ${email}! Мы сообщим вам о новых событиях.`);
+                subscribeForm.querySelector('input').value = '';
+            });
+        });
+    </script>
+</body>
+</html>
